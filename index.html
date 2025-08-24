@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Blackbox Theatre - Watch Trending Movies</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #e23636;
+            --secondary: #2b2d42;
+            --accent: #ed1d24;
+            --light: #f5f5f5;
+            --dark: #1a1a1a;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: rgba(26, 26, 26, 0.9);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 8px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            color: var(--light);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            color: var(--primary);
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 8px 15px;
+            width: 250px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--light);
+            width: 100%;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        .search-box i {
+            color: var(--light);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 80vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1850&q=80') no-repeat center center/cover;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            color: #ccc;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #c62a2a;
+            transform: translateY(-3px);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 2rem;
+            margin: 40px 0 30px;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 80%;
+            width: 5px;
+            background: var(--primary);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            padding: 100px 0 50px;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Movies Section */
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .movie-card {
+            background: #2b2b2b;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .movie-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .movie-info {
+            padding: 15px;
+        }
+
+        .movie-info h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .movie-info p {
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .rating {
+            color: gold;
+            font-weight: 600;
+        }
+
+        /* Categories Section */
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .category {
+            background: #333;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .category:hover, .category.active {
+            background: var(--primary);
+        }
+
+        /* Trending Section */
+        .trending-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .trending-item {
+            display: flex;
+            background: #2b2b2b;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .trending-item img {
+            width: 180px;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .trending-info {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .trending-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-right: 15px;
+        }
+
+        /* Explore Section */
+        .explore-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .explore-card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 200px;
+        }
+
+        .explore-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .explore-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            padding: 20px;
+        }
+
+        /* Favorites Section */
+        .favorites-message {
+            text-align: center;
+            padding: 50px 0;
+            font-size: 18px;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            padding: 50px 0 20px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--primary);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #333;
+            border-radius: 50%;
+            color: white;
+            transition: background 0.3s;
+        }
+
+        .social-icons a:hover {
+            background: var(--primary);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            nav ul li {
+                margin: 5px 10px;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .trending-item {
+                flex-direction: column;
+            }
+
+            .trending-item img {
+                width: 100%;
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                height: auto;
+                padding: 100px 0 50px;
+            }
+            
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .movies-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 15px;
+            }
+            
+            .movie-card img {
+                height: 220px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .search-box {
+                width: 100%;
+                margin-top: 15px;
+            }
+            
+            .header-content {
+                align-items: stretch;
+            }
+            
+            .hero-content {
+                text-align: center;
+            }
+            
+            .section-title {
+                text-align: center;
+                padding-left: 0;
+            }
+            
+            .section-title::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">
+                <i class="fas fa-film"></i> The Blackbox Theatre
+            </a>
+            
+            <nav>
+                <ul>
+                    <li><a class="nav-link active" data-section="home">Home</a></li>
+                    <li><a class="nav-link" data-section="trending">Trending</a></li>
+                    <li><a class="nav-link" data-section="explore">Explore</a></li>
+                    <li><a class="nav-link" data-section="movies">Movies</a></li>
+                    <li><a class="nav-link" data-section="favourite">Favourite</a></li>
+                </ul>
+            </nav>
+            
+            <div class="search-box">
+                <input type="text" placeholder="Search movie...">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Section -->
+    <section id="home" class="content-section active">
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Human's Wife's Bodyguard</h1>
+                    <p>Releasing 10 October - Watch the trailer now!</p>
+                    <a href="#" class="btn">Watch Trailer <i class="fas fa-play-circle"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Movies Section -->
+        <div class="container">
+            <h2 class="section-title">Popular Movies</h2>
+            
+            <div class="categories">
+                <div class="category active">All</div>
+                <div class="category">Action</div>
+                <div class="category">Adventure</div>
+                <div class="category">Comedy</div>
+                <div class="category">Drama</div>
+                <div class="category">Horror</div>
+            </div>
+            
+            <div class="movies-grid">
+                <!-- Movie 1 -->
+                <div class="movie-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_FMjpg_UX1000_.jpg" alt="Spider-Man: No Way Home">
+                    <div class="movie-info">
+                        <h3>Spider-Man: No Way Home</h3>
+                        <p>Action/Sci-Fi</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 8.9
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 2 -->
+                <div class="movie-card">
+                    <img src="jungle cruise.jpeg" alt="Jungle Cruise">
+                    <div class="movie-info">
+                        <h3>Jungle Cruise</h3>
+                        <p>Action/Adventure</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 7.3
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 3 -->
+                <div class="movie-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BNTkwOTE1ZDYtODQ3Yy00YTYwLTg0YWQtYmVkNmFjNGZlYmRiXkEyXkFqcGdeQXVyNTc4MjczMTM@._V1_.jpg" alt="Loki">
+                    <div class="movie-info">
+                        <h3>Loki</h3>
+                        <p>Action/Adventure</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 8.9
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 4 -->
+                <div class="movie-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BYWE3MDVkN2EtNjQ5MS00ZDQ4LTliNzYtMjc2YWMzMDEwMTA3XkEyXkFqcGdeQXVyMTEzMTI1Mjk3._V1_.jpg" alt="Squid Game">
+                    <div class="movie-info">
+                        <h3>Squid Game</h3>
+                        <p>Action/Drama</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 8.7
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 5 -->
+                <div class="movie-card">
+                    <img src="The Batman.jpeg" alt="The Batman">
+                    <div class="movie-info">
+                        <h3>The Batman</h3>
+                        <p>Action/Crime</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 8.5
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 6 -->
+                <div class="movie-card">
+                    <img src="dune.jpeg" alt="Dune">
+                    <div class="movie-info">
+                        <h3>Dune</h3>
+                        <p>Sci-Fi/Adventure</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 8.4
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 7 -->
+                <div class="movie-card">
+                    <img src="the suicide squad.jpeg" alt="The Suicide Squad">
+                    <div class="movie-info">
+                        <h3>The Suicide Squad</h3>
+                        <p>Action/Comedy</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 7.8
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 8 -->
+                <div class="movie-card">
+                    <img src="no time to die.jpeg" alt="No Time To Die">
+                    <div class="movie-info">
+                        <h3>No Time To Die</h3>
+                        <p>Action/Thriller</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 7.9
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Movies and Shows Section -->
+        <div class="container">
+            <h2 class="section-title">Movies And Shows</h2>
+            
+            <div class="movies-grid">
+                <!-- Show 1 -->
+                <div class="movie-card">
+                    <img src="stranger things.jpg" alt="Stranger Things">
+                    <div class="movie-info">
+                        <h3>Stranger Things</h3>
+                        <p>Sci-Fi/Horror</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 9.0
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Show 2 -->
+                <div class="movie-card">
+                    <img src="the witcher.jpg" alt="The Witcher">
+                    <div class="movie-info">
+                        <h3>The Witcher</h3>
+                        <p>Fantasy/Adventure</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 8.5
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Show 3 -->
+                <div class="movie-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BODk4ZjU0NDUtYjdlOS00OTljLTgwZTUtYjkyZjk1NzExZGIzXkEyXkFqcGdeQXVyMDM2NDM2MQ@@._V1_.jpg" alt="The Mandalorian">
+                    <div class="movie-info">
+                        <h3>The Mandalorian</h3>
+                        <p>Sci-Fi/Western</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 9.1
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Show 4 -->
+                <div class="movie-card">
+                    <img src="the last of us.jpg" alt="The Last of Us">
+                    <div class="movie-info">
+                        <h3>The Last of Us</h3>
+                        <p>Drama/Thriller</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 9.2
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trending Section -->
+    <section id="trending" class="content-section">
+        <div class="container">
+            <h2 class="section-title">Trending Now</h2>
+            
+            <div class="trending-list">
+                <div class="trending-item">
+                    <img src="https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_FMjpg_UX1000_.jpg" alt="Spider-Man: No Way Home">
+                    <div class="trending-info">
+                        <h3><span class="trending-number">#1</span> Spider-Man: No Way Home</h3>
+                        <p>Action/Sci-Fi • <span class="rating"><i class="fas fa-star"></i> 8.9</span></p>
+                    </div>
+                </div>
+                
+                <div class="trending-item">
+                    <img src="The Batman.jpeg" alt="The Batman">
+                    <div class="trending-info">
+                        <h3><span class="trending-number">#2</span> The Batman</h3>
+                        <p>Action/Crime • <span class="rating"><i class="fas fa-star"></i> 8.5</span></p>
+                    </div>
+                </div>
+                
+                <div class="trending-item">
+                    <img src="https://m.media-amazon.com/images/M/MV5BODk4ZjU0NDUtYjdlOS00OTljLTgwZTUtYjkyZjk1NzExZGIzXkEyXkFqcGdeQXVyMDM2NDM2MQ@@._V1_.jpg" alt="The Mandalorian">
+                    <div class="trending-info">
+                        <h3><span class="trending-number">#3</span> The Mandalorian</h3>
+                        <p>Sci-Fi/Western • <span class="rating"><i class="fas fa-star"></i> 9.1</span></p>
+                    </div>
+                </div>
+                
+                <div class="trending-item">
+                    <img src="https://m.media-amazon.com/images/M/MV5BYWE3MDVkN2EtNjQ5MS00ZDQ4LTliNzYtMjc2YWMzMDEwMTA3XkEyXkFqcGdeQXVyMTEzMTI1Mjk3._V1_.jpg" alt="Squid Game">
+                    <div class="trending-info">
+                        <h3><span class="trending-number">#4</span> Squid Game</h3>
+                        <p>Action/Drama • <span class="rating"><i class="fas fa-star"></i> 8.7</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Explore Section -->
+    <section id="explore" class="content-section">
+        <div class="container">
+            <h2 class="section-title">Explore Categories</h2>
+            
+            <div class="explore-grid">
+                <div class="explore-card">
+                    <img src="action.jpeg" alt="Action">
+                    <div class="explore-card-overlay">
+                        <h3>Action</h3>
+                    </div>
+                </div>
+                
+                <div class="explore-card">
+                    <img src="https://images.unsplash.com/photo-1535016120720-40c646be5580?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" alt="Comedy">
+                    <div class="explore-card-overlay">
+                        <h3>Comedy</h3>
+                    </div>
+                </div>
+                
+                <div class="explore-card">
+                    <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" alt="Drama">
+                    <div class="explore-card-overlay">
+                        <h3>Drama</h3>
+                    </div>
+                </div>
+                
+                <div class="explore-card">
+                    <img src="https://images.unsplash.com/photo-1460881680858-30d872d5b530?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2071&q=80" alt="Sci-Fi">
+                    <div class="explore-card-overlay">
+                        <h3>Sci-Fi</h3>
+                    </div>
+                </div>
+                
+                <div class="explore-card">
+                    <img src="https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" alt="Horror">
+                    <div class="explore-card-overlay">
+                        <h3>Horror</h3>
+                    </div>
+                </div>
+                
+                <div class="explore-card">
+                    <img src="fantasy.jpeg" alt="Fantasy">
+                    <div class="explore-card-overlay">
+                        <h3>Fantasy</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Movies Section -->
+    <section id="movies" class="content-section">
+        <div class="container">
+            <h2 class="section-title">All Movies</h2>
+            
+            <div class="categories">
+                <div class="category active">All</div>
+                <div class="category">New Releases</div>
+                <div class="category">Coming Soon</div>
+                <div class="category">Top Rated</div>
+                <div class="category">Most Viewed</div>
+            </div>
+            
+            <div class="movies-grid">
+                <!-- Movie 1 -->
+                <div class="movie-card">
+                    <img src="https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_FMjpg_UX1000_.jpg" alt="Spider-Man: No Way Home">
+                    <div class="movie-info">
+                        <h3>Spider-Man: No Way Home</h3>
+                        <p>Action/Sci-Fi</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 8.9
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 2 -->
+                <div class="movie-card">
+                    <img src="jungle cruise.jpeg" alt="Jungle Cruise">
+                    <div class="movie-info">
+                        <h3>Jungle Cruise</h3>
+                        <p>Action/Adventure</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 7.3
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 3 -->
+                <div class="movie-card">
+                    <img src="The Batman.jpeg" alt="The Batman">
+                    <div class="movie-info">
+                        <h3>The Batman</h3>
+                        <p>Action/Crime</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 8.5
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 4 -->
+                <div class="movie-card">
+                    <img src="dune.jpeg" alt="Dune">
+                    <div class="movie-info">
+                        <h3>Dune</h3>
+                        <p>Sci-Fi/Adventure</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 8.4
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 5 -->
+                <div class="movie-card">
+                    <img src="no time to die.jpeg" alt="No Time To Die">
+                    <div class="movie-info">
+                        <h3>No Time To Die</h3>
+                        <p>Action/Thriller</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 7.9
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movie 6 -->
+                <div class="movie-card">
+                    <img src="the suicide squad.jpeg". alt="The Suicide Squad">
+                    <div class="movie-info">
+                        <h3>The Suicide Squad</h3>
+                        <p>Action/Comedy</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i> 7.8
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Favourite Section -->
+    <section id="favourite" class="content-section">
+        <div class="container">
+            <h2 class="section-title">Your Favorites</h2>
+            
+            <div class="favorites-message">
+                <i class="fas fa-heart" style="font-size: 48px; color: var(--primary); margin-bottom: 20px;"></i>
+                <h3>Your favorite movies will appear here</h3>
+                <p>Start adding movies to your favorites by clicking the heart icon on any movie</p>
+            </div>
+            
+            <div class="movies-grid" id="favorites-grid">
+                <!-- Favorites will be dynamically added here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>MOVIEVEL</h3>
+                    <p>Your ultimate destination for movies and TV shows. Find the latest releases and timeless classics.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a class="nav-link" data-section="home">Home</a></li>
+                        <li><a class="nav-link" data-section="trending">Trending</a></li>
+                        <li><a class="nav-link" data-section="explore">Explore</a></li>
+                        <li><a class="nav-link" data-section="movies">Movies</a></li>
+                        <li><a class="nav-link" data-section="favourite">Favourite</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Comedy</a></li>
+                        <li><a href="#">Drama</a></li>
+                        <li><a href="#">Horror</a></li>
+                        <li><a href="#">Sci-Fi</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123,Mohanagar Street Chawkbazar</li>
+                        <li><i class="fas fa-phone"></i> +880181234567</li>
+                        <li><i class="fas fa-envelope"></i> theblackboxtheatre56187@yahoo.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 MOVIEVEL. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation links
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    const targetSection = this.getAttribute('data-section');
+                    
+                    // Update active navigation link
+                    navLinks.forEach(navLink => navLink.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target section
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === targetSection) {
+                            section.classList.add('active');
+                            // Scroll to top
+                            window.scrollTo(0, 0);
+                        }
+                    });
+                });
+            });
+            
+            // Movie card hover effect
+            const movieCards = document.querySelectorAll('.movie-card');
+            
+            movieCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px)';
+                    this.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.3)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+            
+            // Category selection
+            const categories = document.querySelectorAll('.category');
+            
+            categories.forEach(category => {
+                category.addEventListener('click', function() {
+                    // Remove active class from all categories
+                    categories.forEach(cat => cat.classList.remove('active'));
+                    
+                    // Add active class to clicked category
+                    this.classList.add('active');
+                    
+                    // In a real app, you would filter movies here
+                });
+            });
+            
+            // Search functionality
+            const searchBox = document.querySelector('.search-box input');
+            const searchIcon = document.querySelector('.search-box i');
+            
+            searchIcon.addEventListener('click', function() {
+                if (searchBox.value.trim() !== '') {
+                    alert(`Searching for: ${searchBox.value}`);
+                    searchBox.value = '';
+                }
+            });
+            
+            searchBox.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim() !== '') {
+                    alert(`Searching for: ${this.value}`);
+                    this.value = '';
+                }
+            });
+            
+            // Add to favorites functionality
+            movieCards.forEach(card => {
+                const heartIcon = document.createElement('i');
+                heartIcon.className = 'fas fa-heart favorite-icon';
+                heartIcon.style.position = 'absolute';
+                heartIcon.style.top = '10px';
+                heartIcon.style.right = '10px';
+                heartIcon.style.color = 'white';
+                heartIcon.style.fontSize = '24px';
+                heartIcon.style.cursor = 'pointer';
+                heartIcon.style.textShadow = '0 0 5px rgba(0,0,0,0.5)';
+                heartIcon.style.zIndex = '10';
+                heartIcon.style.transition = 'color 0.3s';
+                
+                card.style.position = 'relative';
+                card.querySelector('img').parentNode.appendChild(heartIcon);
+                
+                heartIcon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.style.color = this.style.color === 'white' ? '#e23636' : 'white';
+                    
+                    if (this.style.color === 'rgb(226, 54, 54)') {
+                        // Add to favorites
+                        const movieTitle = card.querySelector('h3').textContent;
+                        alert(`Added "${movieTitle}" to favorites!`);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
